@@ -35,6 +35,8 @@ void applyPatches()
 {
 	// Uncomment this if you want to do stuff within applyPostInitPatches()
 	//patcher::setupPostInitHook();
+	// Uncomment this if you want to do stuff within cleanup()
+	//patcher::setupCleanupHook();
 
 	// Apply sample patches
 	//hires_timer::applyPatch(); // Not needed with the 60 FPS patch
@@ -48,6 +50,14 @@ void applyPatches()
  * Most things will be initialized at this point so do with that whatever you want. :)
  */
 void applyPostInitPatches()
+{
+
+}
+
+/* If patcher::setupCleanupHook() is called above, then this function will be called
+*  upon exiting the game (with Esc+Esc).
+*/
+void cleanup()
 {
 
 }
