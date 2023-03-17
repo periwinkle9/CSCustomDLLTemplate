@@ -15,7 +15,7 @@
 // ...or you can just do this instead of #include-ing all of the above
 //#include "doukutsu/all.h"
 
-#include "../hires_timer.h"
+#include "../../hires_timer.h"
 
 // Wrapping your code inside a namespace helps with avoiding name collisions with other patches
 namespace cs_60fps_patch

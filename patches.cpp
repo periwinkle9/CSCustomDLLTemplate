@@ -8,8 +8,8 @@
 // Example of importing patches from another file via #include
 // (You still have to call the patch functions inside applyPatches() below, of course)
 #include "patches/hires_timer.h"
-#include "patches/sample_patches/patch_60fps.h"
-#include "patches/sample_patches/custom_tsc.h"
+#include "patches/sample_patches/60fps/patch_60fps.h"
+#include "patches/sample_patches/custom_tsc/custom_tsc.h"
 
 // Example of a patch written directly inside this file
 void removeCMUstutter()
