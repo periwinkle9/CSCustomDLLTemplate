@@ -27,16 +27,22 @@
     <ClCompile Include="patches\hires_timer.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="patches\sample_patches\patch_60fps.cpp">
+    <ClCompile Include="patches\sample_patches\60fps\patch_60fps.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="patches\sample_patches\custom_tsc.cpp">
+    <ClCompile Include="patches\sample_patches\custom_tsc\custom_tsc_bootstrapper.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="dinputdll_proxy.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="modloader.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="patches\sample_patches\custom_tsc\custom_tsc_cmds.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="patches\sample_patches\custom_tsc\MIM.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -143,16 +149,19 @@
     <ClInclude Include="patches\hires_timer.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="patches\sample_patches\patch_60fps.h">
+    <ClInclude Include="patches\sample_patches\60fps\patch_60fps.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="patches\sample_patches\custom_tsc.h">
+    <ClInclude Include="patches\sample_patches\custom_tsc\custom_tsc.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="windows_h_wrapper.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="doukutsu\cstdlib.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="patches\sample_patches\custom_tsc\MIM.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
