@@ -13,16 +13,6 @@ namespace layers_mode
 
 constexpr int PXM_BUFFER_SIZE = 0x96000; // Double the vanilla size
 
-// Replacing gMap entirely is too much hassle, so let's just make a new struct with the added data
-struct LAYERSDATA
-{
-	unsigned short* data;
-	unsigned short* farBackData;
-	unsigned short* backData;
-	unsigned short* frontData;
-	unsigned char atrb[0x10000]; // Expanded gMap.atrb to support 16-bit PXMs
-};
-
 LAYERSDATA gLayers;
 
 csvanilla::BOOL InitMapData2()
@@ -80,7 +70,7 @@ void ShiftMapParts(int x, int y)
 {
 	--gLayers.data[x + y * csvanilla::gMap.width];
 }
-csvanilla::BOOL ChangeMapParts(int x, int y, unsigned char no)
+csvanilla::BOOL ChangeMapParts(int x, int y, unsigned short no)
 {
 	unsigned short& tile = gLayers.data[x + y * csvanilla::gMap.width];
 	if (tile == no)
@@ -172,8 +162,9 @@ csvanilla::BOOL RecreateTilesetSurface(const char* name, int surf_no)
 }
 
 
-void applyPatch()
+void applyLayersPatch()
 {
+	using patcher::byte;
 	patcher::replaceFunction(csvanilla::InitMapData2, InitMapData2);
 	// if (gMap.data == NULL) --> if (gLayers.data == NULL) in LoadMapData2
 	const unsigned short* const* const dataPtr = &gLayers.data;
@@ -193,6 +184,10 @@ void applyPatch()
 	patcher::replaceFunction(csvanilla::DeleteMapParts, DeleteMapParts);
 	patcher::replaceFunction(csvanilla::ShiftMapParts, ShiftMapParts);
 	patcher::replaceFunction(csvanilla::ChangeMapParts, ChangeMapParts);
+	// Don't truncate <CMP argument to 1 byte
+	byte pushEAX = 0x50;
+	patcher::patchBytes(0x424B30, &pushEAX, 1);
+
 	patcher::replaceFunction(csvanilla::PutStage_Back, PutStage_Back);
 	patcher::replaceFunction(csvanilla::PutStage_Front, PutStage_Front);
 
