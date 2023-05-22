@@ -3,6 +3,9 @@
 namespace layers_mode
 {
 
+extern int screenTileWidth;
+extern int screenTileHeight;
+
 // Replacing gMap entirely is too much hassle, so let's just make a new struct with the added data
 struct LAYERSDATA
 {
@@ -17,6 +20,9 @@ extern LAYERSDATA gLayers;
 
 void applyLayersPatch();
 void applyTSCPatch();
+
+// Call this from applyPostInitPatches() if using the modloader with graphics_enhancement
+void fixGraphicsEnhancementCompatibility();
 
 inline void applyPatch()
 {

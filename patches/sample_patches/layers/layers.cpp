@@ -12,6 +12,8 @@ namespace layers_mode
 {
 
 constexpr int PXM_BUFFER_SIZE = 0x96000; // Double the vanilla size
+int screenTileWidth = 21;
+int screenTileHeight = 16;
 
 LAYERSDATA gLayers;
 
@@ -25,23 +27,37 @@ csvanilla::BOOL InitMapData2()
 	return 1;
 }
 
-void ReadLayerData(unsigned short* dest, int half_size, csvanilla::FILE* fp)
+void ReadLayerData(unsigned short* dest, int size, csvanilla::FILE* fp)
 {
-	unsigned short tmp;
-	for (int i = 0; i < half_size; ++i)
-	{
-		csvanilla::fread(&tmp, 2, 1, fp);
-		dest[i] = tmp;
-	}
+	csvanilla::fread(dest, 2, size, fp);
 }
 
 // Replaces the fread(gMap.data, 1, gMap.width * gMap.length, fp); call at the end of LoadMapData2()
-void LoadMapData2_hook(void*, unsigned, unsigned mapSize, csvanilla::FILE* fp)
+void LoadMapData2_hook(void*, unsigned pxmLayersCheck, unsigned mapSize, csvanilla::FILE* fp)
 {
-	ReadLayerData(gLayers.farBackData, mapSize, fp);
-	ReadLayerData(gLayers.backData, mapSize, fp);
-	ReadLayerData(gLayers.data, mapSize, fp);
-	ReadLayerData(gLayers.frontData, mapSize, fp);
+	// Check if this is a layers PXM
+	if ((pxmLayersCheck & 0xFF000000) == 0x21000000)
+	{
+		ReadLayerData(gLayers.farBackData, mapSize, fp);
+		ReadLayerData(gLayers.backData, mapSize, fp);
+		ReadLayerData(gLayers.data, mapSize, fp);
+		ReadLayerData(gLayers.frontData, mapSize, fp);
+	}
+	else
+	{
+		// Otherwise, load this like a normal map
+		csvanilla::memset(gLayers.farBackData, 0, mapSize * 2);
+		csvanilla::memset(gLayers.backData, 0, mapSize * 2);
+		csvanilla::memset(gLayers.frontData, 0, mapSize * 2);
+
+		unsigned char* tmp = (unsigned char*)csvanilla::malloc(mapSize);
+		csvanilla::fread(tmp, 1, mapSize, fp);
+		for (unsigned i = 0; i < mapSize; ++i)
+		{
+			gLayers.data[i] = tmp[i];
+		}
+		csvanilla::free(tmp);
+	}
 }
 
 void EndMapData()
@@ -82,77 +98,92 @@ csvanilla::BOOL ChangeMapParts(int x, int y, unsigned short no)
 }
 
 template <typename Func1, typename Func2>
-void PutStage_Layer(unsigned short* data, int fx, int fy, Func1 skipCond, Func2 extra)
+void PutStage_Layer(unsigned short* data, int fx, int fy, Func1 skipCond, Func2 drawExtra)
 {
 	using namespace csvanilla;
 
-	int i, j;
-	::RECT rect;
-	int offset;
-
 	// Get range to draw
-	int num_x = 21;
-	int num_y = 16;
-	int put_x = ((fx / 0x200) + 8) / 16;
-	int put_y = ((fy / 0x200) + 8) / 16;
-
-	int atrb;
-
-	for (j = put_y; j < put_y + num_y; ++j)
+	const int put_x = ((fx / 0x200) + 8) / 16;
+	const int put_y = ((fy / 0x200) + 8) / 16;
+	
+	for (int j = put_y; j < put_y + screenTileHeight; ++j)
 	{
-		for (i = put_x; i < put_x + num_x; ++i)
+		for (int i = put_x; i < put_x + screenTileWidth; ++i)
 		{
 			// Get attribute
-			offset = (j * gMap.width) + i;
-			atrb = GetAttribute(i, j);
+			int offset = (j * gMap.width) + i;
+			int atrb = GetAttribute(i, j);
 
 			if (skipCond(atrb))
 				continue;
 
 			// Draw tile
+			::RECT rect;
 			rect.left = (data[offset] % 16) * 16;
 			rect.top = (data[offset] / 16) * 16;
 			rect.right = rect.left + 16;
 			rect.bottom = rect.top + 16;
 
-			PutBitmap3(&grcGame, ((i * 16) - 8) - (fx / 0x200), ((j * 16) - 8) - (fy / 0x200), &rect, 2);
+			int x = ((i * 16) - 8) - (fx / 0x200), y = ((j * 16) - 8) - (fy / 0x200);
+			PutBitmap3(&grcGame, x, y, &rect, 2);
 
 			// For PutStage_Front
-			extra(atrb, i, j, fx, fy);
+			if (atrb == 0x43)
+				drawExtra(x, y);
 		}
 	}
 }
 
-static bool noSkip(int)
+// Separating this out is assured to have virtually no performance impact, but
+// people have been having lag issues with this hack, so I may as well try anyways
+void PutStage_Layer(unsigned short* data, int fx, int fy)
 {
-	return false;
+	using namespace csvanilla;
+
+	// Get range to draw
+	const int put_x = ((fx / 0x200) + 8) / 16;
+	const int put_y = ((fy / 0x200) + 8) / 16;
+
+	for (int j = put_y; j < put_y + screenTileHeight; ++j)
+	{
+		for (int i = put_x; i < put_x + screenTileWidth; ++i)
+		{
+			int offset = (j * gMap.width) + i;
+
+			// Draw tile
+			::RECT rect;
+			rect.left = (data[offset] % 16) * 16;
+			rect.top = (data[offset] / 16) * 16;
+			rect.right = rect.left + 16;
+			rect.bottom = rect.top + 16;
+			
+			PutBitmap3(&grcGame, ((i * 16) - 8) - (fx / 0x200), ((j * 16) - 8) - (fy / 0x200), &rect, 2);
+		}
+	}
 }
-static void nop(int, int, int, int, int)
-{}
 
 void PutStage_Back(int fx, int fy)
 {
 	// Draw back layers
-	PutStage_Layer(gLayers.farBackData, fx, fy, noSkip, nop);
-	PutStage_Layer(gLayers.backData, fx, fy, noSkip, nop);
+	PutStage_Layer(gLayers.farBackData, fx, fy);
+	PutStage_Layer(gLayers.backData, fx, fy);
 
 	// This is vanilla behavior
-	PutStage_Layer(gLayers.data, fx, fy, [](int atrb) { return atrb >= 0x20; }, nop);
+	PutStage_Layer(gLayers.data, fx, fy, [](int atrb) { return atrb >= 0x20; }, [](int, int) {});
 }
 
 void PutStage_Front(int fx, int fy)
 {
 	// This is vanilla behavior
 	PutStage_Layer(gLayers.data, fx, fy, [](int atrb) { return atrb < 0x40 || atrb >= 0x80; },
-		[](int atrb, int i, int j, int fx, int fy)
+		[](int x, int y)
 		{
 			const ::RECT rcSnack = {256, 48, 272, 64};
-			if (atrb == 0x43)
-				csvanilla::PutBitmap3(&csvanilla::grcGame, ((i * 16) - 8) - (fx / 0x200), ((j * 16) - 8) - (fy / 0x200), &rcSnack, 20);
+			csvanilla::PutBitmap3(&csvanilla::grcGame, x, y, &rcSnack, 20);
 		});
 
 	// Draw the far-front layer
-	PutStage_Layer(gLayers.frontData, fx, fy, noSkip, nop);
+	PutStage_Layer(gLayers.frontData, fx, fy);
 }
 
 csvanilla::BOOL RecreateTilesetSurface(const char* name, int surf_no)
@@ -169,6 +200,9 @@ void applyLayersPatch()
 	// if (gMap.data == NULL) --> if (gLayers.data == NULL) in LoadMapData2
 	const unsigned short* const* const dataPtr = &gLayers.data;
 	patcher::patchBytes(0x413842, reinterpret_cast<const byte* const>(&dataPtr), 4);
+	// Pass PXM header dummy byte into LoadMapData2_hook to check for layers PXM
+	const byte patchArgs[] = {0xFF, 0x75, 0xF4, 0xFF, 0x35, 0x80, 0xE4, 0x49, 0x00};
+	patcher::patchBytes(0x41386F, patchArgs, sizeof patchArgs);
 	// Load layers
 	patcher::writeCall(0x413878, LoadMapData2_hook);
 
@@ -193,6 +227,16 @@ void applyLayersPatch()
 
 	// Recreate tileset surface when loading a new stage
 	patcher::writeCall(0x420C55, RecreateTilesetSurface); // Replaces the call to ReloadBitmap_File()
+}
+
+void fixGraphicsEnhancementCompatibility()
+{
+	// In case of graphics_enhancement with widescreen, reapply the GetAttribute() patch
+	patcher::replaceFunction(csvanilla::GetAttribute, GetAttribute);
+	// Get screen dimensions (in case of widescreen)
+	ReadProcessMemory(GetCurrentProcess(), reinterpret_cast<void*>(0x413AF9), &screenTileWidth, 4, NULL);
+	// The modloader hack doesn't write to this one?
+	//ReadProcessMemory(GetCurrentProcess(), reinterpret_cast<void*>(0x413B00), &screenTileHeight, 4, NULL);
 }
 
 }
