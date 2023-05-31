@@ -112,6 +112,10 @@ void PutStage_Layer(unsigned short* data, int fx, int fy, Func1 skipCond, Func2 
 		{
 			// Get attribute
 			int offset = (j * gMap.width) + i;
+
+			if (data[offset] == 0)
+				continue;
+
 			int atrb = GetAttribute(i, j);
 
 			if (skipCond(atrb))
@@ -149,6 +153,9 @@ void PutStage_Layer(unsigned short* data, int fx, int fy)
 		for (int i = put_x; i < put_x + screenTileWidth; ++i)
 		{
 			int offset = (j * gMap.width) + i;
+
+			if (data[offset] == 0)
+				continue;
 
 			// Draw tile
 			::RECT rect;
