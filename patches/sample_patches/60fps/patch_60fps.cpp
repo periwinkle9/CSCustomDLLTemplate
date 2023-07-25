@@ -72,7 +72,7 @@ BOOL Flip_SystemTask(HWND hWnd)
 	return TRUE;
 }
 
-void patchTimer()
+void applyTimerPatch()
 {
 	using namespace patcher;
 	// Patch time computation
@@ -95,11 +95,10 @@ void patchTimer()
 	patchBytes(0x40FE66, ptr, 4);
 }
 
-void applyPatch()
+void applyFPSPatch()
 {
 	// Replace OG Flip_SystemTask with our version
 	patcher::replaceFunction(csvanilla::Flip_SystemTask, Flip_SystemTask);
-	patchTimer();
 }
 
 }

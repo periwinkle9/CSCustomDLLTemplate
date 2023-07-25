@@ -41,7 +41,7 @@ void applyPatches()
 	// Apply sample patches
 	//hires_timer::applyPatch(); // Not needed with the 60 FPS patch
 	removeCMUstutter();
-	cs_60fps_patch::applyPatch();
+	cs_60fps_patch::applyPatches();
 	custom_tsc_cmds::applyPatch();
 }
 

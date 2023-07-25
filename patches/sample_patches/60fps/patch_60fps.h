@@ -2,5 +2,11 @@
 
 namespace cs_60fps_patch
 {
-void applyPatch();
+void applyFPSPatch();
+void applyTimerPatch();
+inline void applyPatches()
+{
+	applyFPSPatch();
+	applyTimerPatch();
+}
 }
