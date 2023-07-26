@@ -143,8 +143,7 @@ bool loadSfx(const std::filesystem::path& path, int sfxNum)
 	if (csvanilla::lpDS->CreateSoundBuffer(&dsbd, &lpSECONDARYBUFFER[sfxNum], nullptr) != DS_OK ||
 		lpSECONDARYBUFFER[sfxNum]->Lock(0, wavInfo.dataSize, &lpbuf1, &dwbuf1, &lpbuf2, &dwbuf2, 0) != DS_OK)
 	{
-		if (lpSECONDARYBUFFER[sfxNum] != nullptr)
-			freeSoundBuffer();
+		freeSoundBuffer();
 		return false;
 	}
 	CopyMemory(lpbuf1, file.data() + wavInfo.dataIdx, dwbuf1);
