@@ -94,6 +94,7 @@
       <ConformanceMode>true</ConformanceMode>
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
+      <LanguageStandard>stdcpp20</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -113,6 +114,7 @@
       <ConformanceMode>true</ConformanceMode>
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
+      <LanguageStandard>stdcpp20</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -172,6 +174,7 @@
     <ClCompile Include="patches\sample_patches\custom_tsc\MIM.cpp" />
     <ClCompile Include="patches\sample_patches\layers\layers.cpp" />
     <ClCompile Include="patches\sample_patches\layers\tsc.cpp" />
+    <ClCompile Include="patches\sample_patches\wav_sfx\wav_sfx.cpp" />
     <ClCompile Include="patch_utils.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -213,6 +216,7 @@
     <ClInclude Include="patches\hires_timer.h" />
     <ClInclude Include="patches\sample_patches\custom_tsc\MIM.h" />
     <ClInclude Include="patches\sample_patches\layers\layers.h" />
+    <ClInclude Include="patches\sample_patches\wav_sfx\wav_sfx.h" />
     <ClInclude Include="patch_utils.h" />
     <ClInclude Include="windows_h_wrapper.h" />
   </ItemGroup>
