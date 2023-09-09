@@ -1,11 +1,11 @@
 #include "patch_utils.h"
 
 // Initialization function called when the DLL is first loaded
-void applyPatches()
+bool applyPatches()
 {
 	//patcher::setupPostInitHook();
 	//patcher::setupCleanupHook();
-
+	return true;
 }
 
 /* If patcher::setupPostInitHook() is called above, then this function will be called
