@@ -31,7 +31,7 @@ void removeCMUstutter()
  * line below and then writing your patches inside applyPostInitPatches()
  * instead of this function.
  */
-void applyPatches()
+bool applyPatches()
 {
 	// Uncomment this if you want to do stuff within applyPostInitPatches()
 	//patcher::setupPostInitHook();
@@ -43,6 +43,7 @@ void applyPatches()
 	removeCMUstutter();
 	cs_60fps_patch::applyPatches();
 	custom_tsc_cmds::applyPatch();
+	return true;
 }
 
 /* If patcher::setupPostInitHook() is called above, then this function will be called

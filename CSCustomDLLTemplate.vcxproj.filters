@@ -164,9 +164,6 @@
     <ClInclude Include="patches\sample_patches\custom_tsc\custom_tsc.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="windows_h_wrapper.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="doukutsu\cstdlib.h">
       <Filter>Header Files</Filter>
     </ClInclude>

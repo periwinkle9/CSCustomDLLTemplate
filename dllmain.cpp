@@ -1,8 +1,9 @@
 // dllmain.cpp : Defines the entry point for the DLL application.
 // (You shouldn't need to modify anything in this file.)
-#include "windows_h_wrapper.h"
+#define WIN32_LEAN_AND_MEAN
+#include <Windows.h>
 
-void applyPatches();
+bool applyPatches();
 
 BOOL APIENTRY DllMain( HMODULE hModule,
                        DWORD  ul_reason_for_call,
@@ -12,7 +13,7 @@ BOOL APIENTRY DllMain( HMODULE hModule,
     try
     {
         if (ul_reason_for_call == DLL_PROCESS_ATTACH)
-            applyPatches();
+            return applyPatches();
     }
     catch (...)
     {
