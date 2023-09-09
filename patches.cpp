@@ -21,6 +21,8 @@ void removeCMUstutter()
 
 /* Initialization function called when the DLL is first loaded.
  * Add your patches to this function to have them be applied to the game.
+ * Return true unless something went wrong, in which case you can return false to
+ * terminate the process.
  * NOTE: This function is called from DllMain() when the DLL is loaded.
  * As such, there are significant restrictions on what you can safely do within
  * this function. For more information, see:
