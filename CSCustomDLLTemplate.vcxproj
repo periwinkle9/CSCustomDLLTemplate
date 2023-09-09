@@ -204,7 +204,6 @@
     <ClInclude Include="doukutsu\types.h" />
     <ClInclude Include="patches\hires_timer.h" />
     <ClInclude Include="patch_utils.h" />
-    <ClInclude Include="windows_h_wrapper.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="exports_msvc.def" />

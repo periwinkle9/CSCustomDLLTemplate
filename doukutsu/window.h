@@ -1,6 +1,6 @@
 #pragma once
 
-#include "windows_h_wrapper.h"
+#include <Windows.h>
 // Newer versions of Visual Studio don't support anything earlier than DirectInput8
 #if defined(_MSC_VER) && _MSC_VER >= 1500
 #define DIRECTINPUT_VERSION 0x800
