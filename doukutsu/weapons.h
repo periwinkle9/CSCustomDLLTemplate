@@ -111,8 +111,9 @@ const auto ShootBullet = reinterpret_cast<void(*)(void)>(0x41FE70);
 
 // Global variables
 static auto& gBul = *reinterpret_cast<BULLET(*)[64]>(0x499C98);
-static auto& gBulTbl = *reinterpret_cast<BULLETTABLE(*)[46]>(0x48F044);
+static auto& gBulTbl = *reinterpret_cast<BULLETTABLE(*)[46]>(0x48F048);
 
+static int& empty_caret_timer = *reinterpret_cast<int*>(0x4A554C);
 static int& spur_charge = *reinterpret_cast<int*>(0x4A5550);
 
 }
