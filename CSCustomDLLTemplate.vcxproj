@@ -172,6 +172,7 @@
     <ClCompile Include="patches\sample_patches\custom_tsc\custom_tsc_bootstrapper.cpp" />
     <ClCompile Include="patches\sample_patches\custom_tsc\custom_tsc_cmds.cpp" />
     <ClCompile Include="patches\sample_patches\custom_tsc\MIM.cpp" />
+    <ClCompile Include="patches\sample_patches\external_orgs\external_orgs.cpp" />
     <ClCompile Include="patches\sample_patches\layers\layers.cpp" />
     <ClCompile Include="patches\sample_patches\layers\tsc.cpp" />
     <ClCompile Include="patches\sample_patches\wav_sfx\wav_sfx.cpp" />
@@ -215,10 +216,10 @@
     <ClInclude Include="patches\sample_patches\custom_tsc\custom_tsc.h" />
     <ClInclude Include="patches\hires_timer.h" />
     <ClInclude Include="patches\sample_patches\custom_tsc\MIM.h" />
+    <ClInclude Include="patches\sample_patches\external_orgs\external_orgs.h" />
     <ClInclude Include="patches\sample_patches\layers\layers.h" />
     <ClInclude Include="patches\sample_patches\wav_sfx\wav_sfx.h" />
     <ClInclude Include="patch_utils.h" />
-    <ClInclude Include="windows_h_wrapper.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="exports_msvc.def" />

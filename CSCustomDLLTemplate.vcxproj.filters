@@ -54,6 +54,9 @@
     <ClCompile Include="patches\sample_patches\wav_sfx\wav_sfx.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="patches\sample_patches\external_orgs\external_orgs.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="patch_utils.h">
@@ -174,6 +177,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="patches\sample_patches\wav_sfx\wav_sfx.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="patches\sample_patches\external_orgs\external_orgs.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
