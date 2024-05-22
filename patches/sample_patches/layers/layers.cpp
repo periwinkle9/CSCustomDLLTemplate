@@ -27,7 +27,17 @@ csvanilla::BOOL InitMapData2()
 	return 1;
 }
 
-void ReadLayerData(unsigned short* dest, int size, csvanilla::FILE* fp)
+void ReadLayerData8(unsigned short* dest, unsigned size, csvanilla::FILE* fp)
+{
+	unsigned char* tmp = (unsigned char*)csvanilla::malloc(size);
+	csvanilla::fread(tmp, 1, size, fp);
+	for (unsigned i = 0; i < size; ++i)
+	{
+		dest[i] = tmp[i];
+	}
+	csvanilla::free(tmp);
+}
+void ReadLayerData16(unsigned short* dest, unsigned size, csvanilla::FILE* fp)
 {
 	csvanilla::fread(dest, 2, size, fp);
 }
@@ -35,28 +45,28 @@ void ReadLayerData(unsigned short* dest, int size, csvanilla::FILE* fp)
 // Replaces the fread(gMap.data, 1, gMap.width * gMap.length, fp); call at the end of LoadMapData2()
 void LoadMapData2_hook(void*, unsigned pxmLayersCheck, unsigned mapSize, csvanilla::FILE* fp)
 {
-	// Check if this is a layers PXM
-	if ((pxmLayersCheck & 0xFF000000) == 0x21000000)
+	// Check what kind of PXM we're loading
+	switch (pxmLayersCheck >> 24)
 	{
-		ReadLayerData(gLayers.farBackData, mapSize, fp);
-		ReadLayerData(gLayers.backData, mapSize, fp);
-		ReadLayerData(gLayers.data, mapSize, fp);
-		ReadLayerData(gLayers.frontData, mapSize, fp);
-	}
-	else
-	{
-		// Otherwise, load this like a normal map
+	case 0x20: // 8-bit layers
+		ReadLayerData8(gLayers.farBackData, mapSize, fp);
+		ReadLayerData8(gLayers.backData, mapSize, fp);
+		ReadLayerData8(gLayers.data, mapSize, fp);
+		ReadLayerData8(gLayers.frontData, mapSize, fp);
+		break;
+	case 0x21: // 16-bit layers
+		ReadLayerData16(gLayers.farBackData, mapSize, fp);
+		ReadLayerData16(gLayers.backData, mapSize, fp);
+		ReadLayerData16(gLayers.data, mapSize, fp);
+		ReadLayerData16(gLayers.frontData, mapSize, fp);
+		break;
+	default:
+		// Load this like a normal map
 		csvanilla::memset(gLayers.farBackData, 0, mapSize * 2);
 		csvanilla::memset(gLayers.backData, 0, mapSize * 2);
 		csvanilla::memset(gLayers.frontData, 0, mapSize * 2);
 
-		unsigned char* tmp = (unsigned char*)csvanilla::malloc(mapSize);
-		csvanilla::fread(tmp, 1, mapSize, fp);
-		for (unsigned i = 0; i < mapSize; ++i)
-		{
-			gLayers.data[i] = tmp[i];
-		}
-		csvanilla::free(tmp);
+		ReadLayerData8(gLayers.data, mapSize, fp);
 	}
 }
 
