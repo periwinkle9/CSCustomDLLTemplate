@@ -125,7 +125,7 @@ bool loadSfx(const std::filesystem::path& path, int sfxNum)
 	if (!wavInfo.valid)
 	{
 #ifdef _DEBUG
-		std::string warningMsg = wavPath.string() + ": unrecognized or invalid WAV format";
+		std::string warningMsg = path.string() + ": unrecognized or invalid WAV format";
 		OutputDebugStringA(warningMsg.c_str());
 #endif
 		return false;
