@@ -8,6 +8,8 @@ Common TSC errors that this hack can catch:
  - Reaching the end of an event without <END
  - Text sounds outside of message boxes (usually more a symptom of other problems)
  - TSC file too big (not a common problem, but can cause strange issues if left undetected)
+ - Commands targeting an NPC event number failing to find any such NPC
+   (this is often due to the scripter specifying the NPC type instead of the event number)
 */
 
 #include "debug_tsc.h"
@@ -38,6 +40,14 @@ csvanilla::BOOL LoadTextScript_Stage(const char* name);
 // Defined in tsc_exec_checks.cpp
 csvanilla::BOOL handleEventNotFound(int eventNum, csvanilla::BOOL result);
 int checkUnexpectedText();
+
+// Parameter checks for TSC commands (WIP-ish)
+// Defined in npc_cmds.cpp
+void SetFrameTargetNpChar(int event, int wait);
+void ChangeNpCharByEvent(int eventNum, int npcType, int direction);
+void ChangeCheckableNpCharByEvent(int eventNum, int npcType, int direction);
+void SetNpCharActionNo(int eventNum, int actNo, int direction);
+void MoveNpChar(int eventNum, int x, int y, int direction);
 
 // Patches StartTextScript() and JumpTextScript() to call our function at the end to handle the return value
 // (The vanilla game normally ignores the return value from these functions)
@@ -87,10 +97,30 @@ bool patchTSCParserHook()
 	return true;
 }
 
+#define patchCall(addr, func) if (patcher::verifyBytes(addr, origBytes_ ## addr, sizeof origBytes_ ## addr)) patcher::writeCall(addr, func)
+// Patches TextScriptProc() when parsing certain NPC-related commands, to call our function instead of the vanilla one
+bool patchNPCcmds()
+{
+	using patcher::byte;
+	const byte origBytes_0x4241C0[] = {0xE8, 0x8B, 0xB0, 0xFE, 0xFF}; // SetFrameTargetNpChar
+	const byte origBytes_0x424705[] = {0xE8, 0xA6, 0xB3, 0x04, 0x00}; // ChangeNpCharByEvent
+	const byte origBytes_0x4247AB[] = {0xE8, 0xE0, 0xB7, 0x04, 0x00}; // SetNpCharActionNo
+	const byte origBytes_0x424853[] = {0xE8, 0xB8, 0xB4, 0x04, 0x00}; // ChangeCheckableNpCharByEvent
+	const byte origBytes_0x424A06[] = {0xE8, 0x55, 0xB6, 0x04, 0x00}; // MoveNpChar
+	patchCall(0x4241C0, SetFrameTargetNpChar);
+	patchCall(0x424705, ChangeNpCharByEvent);
+	patchCall(0x4247AB, SetNpCharActionNo);
+	patchCall(0x424853, ChangeCheckableNpCharByEvent);
+	patchCall(0x424A06, MoveNpChar);
+
+	// I don't particularly care if any of these patches failed (due to another ASM hack modifying that space)
+	return true;
+}
+
 bool applyPatch()
 {
 	patcher::replaceFunction(csvanilla::LoadTextScript2, LoadTextScript2);
 	patcher::replaceFunction(csvanilla::LoadTextScript_Stage, LoadTextScript_Stage);
-	return patchStartJumpTextScript() && patchTSCParserHook();
+	return patchStartJumpTextScript() && patchTSCParserHook() && patchNPCcmds();
 }
 } // namespace debug_tsc

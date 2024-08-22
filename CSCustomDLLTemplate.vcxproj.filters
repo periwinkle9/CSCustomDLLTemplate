@@ -66,6 +66,9 @@
     <ClCompile Include="patches\sample_patches\debug_tsc\tsc_exec_checks.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="patches\sample_patches\debug_tsc\npc_cmds.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="patch_utils.h">

@@ -173,6 +173,7 @@
     <ClCompile Include="patches\sample_patches\custom_tsc\custom_tsc_cmds.cpp" />
     <ClCompile Include="patches\sample_patches\custom_tsc\MIM.cpp" />
     <ClCompile Include="patches\sample_patches\debug_tsc\debug_tsc.cpp" />
+    <ClCompile Include="patches\sample_patches\debug_tsc\npc_cmds.cpp" />
     <ClCompile Include="patches\sample_patches\debug_tsc\tsc_exec_checks.cpp" />
     <ClCompile Include="patches\sample_patches\debug_tsc\tsc_load.cpp" />
     <ClCompile Include="patches\sample_patches\external_orgs\external_orgs.cpp" />
