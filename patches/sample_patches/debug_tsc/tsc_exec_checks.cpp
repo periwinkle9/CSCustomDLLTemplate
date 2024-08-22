@@ -1,4 +1,5 @@
 #include <string>
+#include <string_view>
 #include <format>
 
 #include "doukutsu/player.h"
@@ -51,9 +52,20 @@ int checkUnexpectedText()
 			std::string unprintedText;
 			for (int pos = gTS.p_read; gTS.data[pos] != '\0' && gTS.data[pos] != '<' && gTS.data[pos] != '\r'; ++pos)
 				unprintedText += gTS.data[pos];
+
+			// Grab the whole line too, for additional context
+			int startPos, endPos;
+			for (startPos = gTS.p_read; startPos > 0 && gTS.data[startPos] != '\n'; --startPos)
+			{}
+			++startPos; // Advance back to the start of the line
+			for (endPos = gTS.p_read; gTS.data[endPos] != '\0' && gTS.data[endPos] != '\r'; ++endPos)
+			{}
+			std::string_view problematicLine(gTS.data + startPos, endPos - startPos);
+
 			reportProblem(std::format("Interpreting \"{}\" as text, but no message box is active. "
-				"(This is usually a symptom of another TSC error.)",
-				unprintedText));
+				"(This is usually a symptom of another TSC error.)\n"
+				"Context:\n{}",
+				unprintedText, problematicLine));
 		}
 	}
 	else

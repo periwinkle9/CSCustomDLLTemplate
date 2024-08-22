@@ -66,7 +66,7 @@ void analyzeTSC(const std::string& script)
 		if (currentPos > 0 && script[currentPos - 1] != '\n')
 		{
 			reportProblem(std::format("Detected event number not at the start of a line (possible erroneous use of # in a textbox?).\n"
-				"If this is truly meant to be an event number, it is recommended to put it at the start of the line.\nOffending line: {}", getLine(currentPos)));
+				"If this is truly meant to be an event number, it is recommended to put it at the start of the line.\nContext: {}", getLine(currentPos)));
 		}
 
 		int eventNum = parseEventNumber(currentPos + 1);
