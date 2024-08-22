@@ -21,6 +21,7 @@ const auto strcat = reinterpret_cast<char* (*)(char*, const char*)>(0x481110);
 const auto strlen = reinterpret_cast<size_t(*)(const char*)>(0x481200);
 const auto free = reinterpret_cast<void(*)(void*)>(0x48128B);
 const auto malloc = reinterpret_cast<void* (*)(size_t)>(0x4813A3);
+const auto realloc = reinterpret_cast<void* (*)(void*, size_t)>(0x48ADF2);
 const auto memcpy = reinterpret_cast<void* (*)(void*, const void*, size_t)>(0x4813C0);
 const auto srand = reinterpret_cast<void(*)(unsigned)>(0x4816FD);
 const auto rand = reinterpret_cast<int(*)(void)>(0x48170A);
