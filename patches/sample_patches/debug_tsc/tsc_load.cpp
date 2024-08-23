@@ -13,7 +13,6 @@ using std::size_t;
 
 namespace csvanilla
 {
-const auto msize = reinterpret_cast<size_t(*)(void*)>(0x48AF9F);
 // Copied from doukutsu/window.h to avoid an unnecessary #include <Windows.h>
 const auto& gDataPath = *reinterpret_cast<char(*)[260]>(0x49E220);
 }
@@ -26,7 +25,7 @@ void checkAndReallocTSCBuffer(size_t scriptSize)
 {
 	// Possible FIXME: check against original msize rather than current msize
 	// (in case of multiple scripts being too large, those other scripts may not be caught immediately)
-	if (scriptSize >= csvanilla::msize(csvanilla::gTS.data))
+	if (scriptSize >= csvanilla::_msize(csvanilla::gTS.data))
 	{
 		reportProblem(std::format(
 			"Current TSC file is too big ({} bytes).\nPlease use the tsc_malloc hack to increase the max TSC buffer size.",
