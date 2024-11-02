@@ -6,7 +6,6 @@
 #include "doukutsu/cstdlib.h"
 #include "doukutsu/map.h"
 #include "doukutsu/draw.h"
-#include "doukutsu/npc.h"
 
 namespace layers_mode
 {
@@ -102,9 +101,7 @@ csvanilla::BOOL ChangeMapParts(int x, int y, unsigned short no)
 	if (tile == no)
 		return 0;
 	tile = no;
-	for (int i = 0; i < 3; ++i)
-		csvanilla::SetNpChar(4, x * 0x2000, y * 0x2000, 0, 0, 0, nullptr, 0);
-	return 1;
+	return MakeCMPSmoke(x, y);
 }
 
 template <typename Func1, typename Func2>
@@ -238,6 +235,18 @@ void applyLayersPatch()
 	// Don't truncate <CMP argument to 1 byte
 	byte pushEAX = 0x50;
 	patcher::patchBytes(0x424B30, &pushEAX, 1);
+	// Separate the part of the vanilla ChangeMapParts() function that creates smoke into a new function
+	// (for compatibility with the hack that changes which NPC spawns when doing <CMP)
+	const patcher::byte CMPMakeSmoke[] = {
+		// 0x413A90:
+		0x55, // push ebp
+		0x89, 0xE5, // move ebp, esp
+		0x83, 0xEC, 0x04, // sub esp, 4
+		0x66, 0x0F, 0x1F, 0x44, 0x00, 0x00, // nop
+		0x0F, 0x1F, 0x44, 0x00, 0x00 // nop
+		// (below this in vanilla is the code that spawns smoke)
+	};
+	patcher::patchBytes(0x413A90, CMPMakeSmoke, sizeof CMPMakeSmoke);
 
 	patcher::replaceFunction(csvanilla::PutStage_Back, PutStage_Back);
 	patcher::replaceFunction(csvanilla::PutStage_Front, PutStage_Front);

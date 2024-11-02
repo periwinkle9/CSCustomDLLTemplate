@@ -4,7 +4,6 @@
 #include "layers.h"
 #include "patch_utils.h"
 #include "doukutsu/map.h"
-#include "doukutsu/npc.h"
 #include "doukutsu/tsc.h"
 
 namespace layers_mode
@@ -41,9 +40,7 @@ csvanilla::BOOL ChangeMapLayer(int x, int y, unsigned short no, int layer)
 	if (tile == nullptr || *tile == no)
 		return 0;
 	*tile = no;
-	for (int i = 0; i < 3; ++i)
-		csvanilla::SetNpChar(4, x * 0x2000, y * 0x2000, 0, 0, 0, nullptr, 0);
-	return 1;
+	return MakeCMPSmoke(x, y);
 }
 
 // Conveniently, <SMP and <CMP are right next to each other in the ASM

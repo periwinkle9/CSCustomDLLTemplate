@@ -20,6 +20,7 @@ extern LAYERSDATA gLayers;
 
 void applyLayersPatch();
 void applyTSCPatch();
+const auto MakeCMPSmoke = reinterpret_cast<int(*)(int, int)>(0x413A90);
 
 // Call this from applyPostInitPatches() if using the modloader with graphics_enhancement
 void fixGraphicsEnhancementCompatibility();
