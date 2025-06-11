@@ -47,10 +47,8 @@ public:
 void OrgBuffer::reset()
 {
 	if (data != nullptr && isFromFile)
-	{
-		delete data;
-		data = nullptr;
-	}
+		delete[] data;
+	data = nullptr;
 }
 
 void OrgBuffer::loadFromFile(const std::filesystem::path& filePath)
